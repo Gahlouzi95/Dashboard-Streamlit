@@ -4,18 +4,14 @@ import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime
 
-# ============================
-# CONFIGURATION DE LA PAGE
-# ============================
+
 st.set_page_config(
     page_title="Dashboard RATP - Fontaines & CV",
     page_icon="💧",
     layout="wide"
 )
 
-# ============================
-# FONCTIONS DE PRÉPARATION DES DONNÉES
-# ============================
+
 
 @st.cache_data
 def load_and_prepare_data():
@@ -25,25 +21,25 @@ def load_and_prepare_data():
     - Gère les valeurs manquantes
     - Crée des variables dérivées
     """
-    # Chargement des données
+   
     df = pd.read_csv('fontaines-a-eau-dans-le-reseau-ratp.csv', sep=';', encoding='utf-8-sig')
     
-    # Renommage des colonnes pour plus de clarté
+
     df.columns = [
         'id_ratp', 'ligne', 'station', 'longitude', 'latitude', 
         'id_idm', 'adresse', 'code_postal', 'commune', 
         'num_acces', 'nom_acces', 'zone_controlee', 'point_geo'
     ]
     
-    # Gestion des valeurs manquantes
+
     df['zone_controlee'] = df['zone_controlee'].fillna('non renseigné')
     df['nom_acces'] = df['nom_acces'].fillna('Non spécifié')
     
-    # Création de variables dérivées
+
     df['type_ligne'] = df['ligne'].apply(lambda x: 'RER' if x in ['A', 'B', 'C', 'D', 'E'] else 'Métro')
     df['region'] = df['code_postal'].apply(lambda x: 'Paris' if x >= 75000 and x < 76000 else 'Banlieue')
     
-    # Tri par ligne
+  
     df = df.sort_values('ligne')
     
     return df
@@ -74,7 +70,7 @@ def create_line_distribution_chart(df):
 def create_map_visualization(df_filtered):
     """Crée une carte interactive des fontaines avec couleurs officielles RATP"""
     
-    # Dictionnaire des couleurs officielles RATP
+    TP
     couleurs_ratp = {
         '1': '#FFCD00',   # Jaune
         '2': '#0064B0',   # Bleu
@@ -94,10 +90,10 @@ def create_map_visualization(df_filtered):
     
     }
     
-    # Trier df_filtered par ligne pour l'ordre de la légende
+  
     df_sorted = df_filtered.copy()
     
-    # Fonction de tri personnalisée (chiffres puis lettres)
+
     def sort_key(ligne):
         ligne = str(ligne)
         if ligne.isdigit():
@@ -110,7 +106,7 @@ def create_map_visualization(df_filtered):
     df_sorted['sort_key'] = df_sorted['ligne'].apply(sort_key)
     df_sorted = df_sorted.sort_values('sort_key')
     
-    # Créer la carte
+  
     fig = px.scatter_mapbox(
         df_sorted,
         lat='latitude',
@@ -184,19 +180,13 @@ def create_type_comparison_chart(df):
     
     return fig
 
-# ============================
-# CHARGEMENT DES DONNÉES
-# ============================
+
 df = load_and_prepare_data()
 
-# ============================
-# CRÉATION DES ONGLETS
-# ============================
+
 tab1, tab2, tab3 = st.tabs(["👤 CV Ismaël Gahlouzi", "📊 Dashboard Fontaines RATP", "📈 Analyses Détaillées"])
 
-# ============================
-# ONGLET 1 : DASHBOARD PRINCIPAL
-# ============================
+
 with tab2:
     st.title("💧 Dashboard d'analyse des fontaines à eau RATP")
     st.markdown("""
@@ -224,7 +214,7 @@ with tab2:
     
     st.markdown("---")
     
-    # Filtres interactifs
+ 
     st.subheader("🔍 Filtres interactifs")
     
     col_filter1, col_filter2, col_filter3 = st.columns(3)
@@ -248,7 +238,7 @@ with tab2:
             options=['Toutes', 'en zone contrôlée', 'non renseigné']
         )
     
-    # Application des filtres
+   
     df_filtered = df[df['ligne'].isin(selected_lines)]
     
     if selected_type != 'Tous':
@@ -261,7 +251,7 @@ with tab2:
     
     st.markdown("---")
     
-    # Visualisations principales
+    
     col_viz1, col_viz2 = st.columns(2)
     
     with col_viz1:
@@ -270,11 +260,10 @@ with tab2:
     with col_viz2:
         st.plotly_chart(create_zone_comparison_chart(df_filtered), use_container_width=True)
     
-    # Carte interactive
+   
     st.subheader("🗺️ Carte interactive des fontaines")
     st.plotly_chart(create_map_visualization(df_filtered), use_container_width=True)
     
-    # Tableau de données
     st.subheader("📋 Données filtrées")
     st.dataframe(
         df_filtered[['ligne', 'station', 'adresse', 'commune', 'zone_controlee']],
@@ -282,15 +271,13 @@ with tab2:
         height=300
     )
 
-# ============================
-# ONGLET 2 : ANALYSES DÉTAILLÉES
-# ============================
+
 with tab3:
     st.title("📈 Analyses détaillées")
     
     st.markdown("---")
     
-    # Comparaison Métro vs RER
+    
     col_analysis1, col_analysis2 = st.columns(2)
     
     with col_analysis1:
@@ -313,8 +300,7 @@ with tab3:
     
     st.markdown("---")
     
-    # Top 10 des lignes
-        # Top 10 des lignes
+   
     st.subheader("🏆 Top 10 des lignes les mieux équipées")
     
     top_lines = df['ligne'].value_counts().head(10)
@@ -365,9 +351,7 @@ with tab3:
        - Améliorer l'accessibilité en installant plus de fontaines hors zones contrôlées
     """)
 
-# ============================
-# ONGLET 3 : CV
-# ============================
+
 with tab1:
     col_left, col_right = st.columns([1, 3])
     
@@ -477,9 +461,7 @@ with tab1:
             - ⚙️ **VBA** (automatisation Excel)
             """)
 
-# ============================
-# FOOTER
-# ============================
+
 st.markdown("---")
 st.markdown(
     f"""
@@ -490,3 +472,4 @@ st.markdown(
     """, 
     unsafe_allow_html=True
 )
+
