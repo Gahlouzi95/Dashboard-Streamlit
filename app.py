@@ -374,10 +374,6 @@ with tab1:
     with col_left:
         st.markdown("### Ismaël Gahlouzi")
         st.markdown("**Data Analyst**")
-        try:
-            st.image("thumbnail_IMG_0222.jpg", width=150)
-        except:
-            st.info("📷 Photo de profil")
         st.markdown("---")
 
         
